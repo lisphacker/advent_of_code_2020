@@ -22,7 +22,6 @@ day2 :: [Int] -> Maybe Int
 day2 l = let s = S.empty :: S.Set (Int, Int)
          in search l l s
     where search [] _ _ = Nothing
-          -- search _ [] _ = Nothing
           search (x:xs) [] s = search xs xs s
           search (x:xs) (y:ys) s 
             | S.member (x, 2020 - x - y) s = Just $ x * y * (2020 - x - y)
