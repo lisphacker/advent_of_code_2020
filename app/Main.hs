@@ -2,7 +2,7 @@ module Main where
 
 import Debug.Trace (trace)
 import Data.List.Split (splitOn)
-import Lib (day1_1, day1_2, day2_1, day2_2)
+import Lib
 
 main1 :: IO ()
 main1 = do
@@ -19,5 +19,10 @@ main2 = do
                     mx = (read $ rangeStrs !! 1) :: Int
                 in (mn, mx, (ws !! 1) !! 0, ws !! 2)
 
+main3 :: IO ()
+main3 = do
+    rows <- lines <$> getContents
+    print $ day3_2 rows
+
 main :: IO ()
-main = main2
+main = main3
