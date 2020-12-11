@@ -5,12 +5,14 @@ module Lib
     , day2_2
     , day3_1
     , day3_2
+    -- , day4_1
     ) where
 
 import Debug.Trace (trace)
 import Data.List (sort)
 import qualified Data.Set as S (empty, insert, member, Set)
 import qualified Data.Text as T
+import qualified Text.ParserCombinators.ReadP as TP
 
 day1_1 :: [Int] -> Maybe Int
 day1_1 l = let l' = sort l
@@ -69,4 +71,8 @@ day3_2 rows = let rows' = fmap T.pack rows
                                           case nth x r of
                        '.' -> countTrees rs' x' w c xinc yinc
                        '#' -> countTrees rs' x' w (c + 1) xinc yinc
-    nth i = T.head . T.drop i 
+    nth i = T.head . T.drop i
+
+-- day4_1 :: String -> Int
+-- day4_1 contents = TP.readP_to_S
+--   where
