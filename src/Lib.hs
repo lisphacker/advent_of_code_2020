@@ -85,7 +85,7 @@ day4_1 contents = let fieldLists = map (map (head . splitOn ":") . words . unwor
 
 day4_2 :: String -> Int
 day4_2 contents = let fieldLists = map (M.fromList . map ((\[a,b] -> (a, b)) . splitOn ":") . words . unwords) $ splitOn [""] $ lines contents
-                  in length $ traceShow (map validate fieldLists) $ filter validate fieldLists
+                  in length $ filter validate fieldLists
   where validate fl
           | length fl <= 6 = False
           | length fl == 7 && "cid" `M.member` fl = False
@@ -99,19 +99,25 @@ day4_2 contents = let fieldLists = map (M.fromList . map ((\[a,b] -> (a, b)) . s
           | otherwise = True
 
         validateYear min max (Just byr) = case (readMaybe byr :: Maybe Int) of
-                                   Just y  -> traceShow (show min ++ " " ++ show max ++ " " ++ show y) y >= min && y <= max
+                                   Just y  -> y >= min && y <= max
                                    Nothing -> False
         validateYear _   _   Nothing    = False
 
-        validateHeight (Just hs) = case span isDigit hs of
-                                     (l,t) -> not (null l) && (t == "cm" || t == "in")
+        validateHeight (Just hs) = let (lstr, t) = span isDigit hs
+                                       maybeL = readMaybe lstr :: Maybe Int
+                                   in case maybeL of
+                                     Just l -> case t of
+                                       "cm" -> l >= 150 && l <= 193
+                                       "in" -> l >= 59 && l <= 76
+                                       _    -> False
+                                     _      -> False
         validateHeight Nothing   = False
         
-        validateHairColor (Just c) = head c == '#' && all isHexDigit (tail c)
+        validateHairColor (Just c) = length c == 7 && head c == '#' && all isHexDigit (tail c)
         validateHairColor Nothing  = False
         
         validateEyeColor (Just c) = c `S.member` S.fromList ["amb","blu","brn","gry","grn","hzl","oth"]
         validateEyeColor Nothing  = False
 
-        validatePassport (Just p) = not (null p) && all isDigit p
+        validatePassport (Just p) = length p == 9 && all isDigit p
         validatePassport Nothing  = False
