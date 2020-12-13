@@ -7,6 +7,8 @@ module Lib
     , day3_2
     , day4_1
     , day4_2
+    , day5_1
+    , day5_2
     ) where
 
 import Debug.Trace (trace, traceShow)
@@ -121,3 +123,20 @@ day4_2 contents = let fieldLists = map (M.fromList . map ((\[a,b] -> (a, b)) . s
 
         validatePassport (Just p) = length p == 9 && all isDigit p
         validatePassport Nothing  = False
+
+day5_1 :: [String] -> Int
+day5_1 passes = maximum $ map getSeatNum passes
+  where getSeatNum pass = let row = readBinStr 0 'F' 'B' $ take 7 pass
+                              col = readBinStr 0 'L' 'R' $ (take 3 . drop 7) pass
+                          in row * 8 + col
+        readBinStr :: Int -> Char -> Char -> [Char] -> Int
+        readBinStr acc _ _ [] = acc
+        readBinStr acc c0 c1 (c:cs) =
+         if c == c0
+          then
+            readBinStr (acc * 2) c0 c1 cs
+          else
+            readBinStr (acc * 2 + 1) c0 c1 cs
+
+day5_2 :: [String] -> Int
+day5_2 = undefined

@@ -29,5 +29,10 @@ main4 = do
     contents <- getContents
     print $ day4_2 contents
 
+main5 :: IO ()
+main5 = do
+    rows <- lines <$> getContents
+    print $ day5_1 rows
+
 main :: IO ()
-main = main4
+main = main5
