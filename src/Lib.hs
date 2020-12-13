@@ -5,11 +5,12 @@ module Lib
     , day2_2
     , day3_1
     , day3_2
-    -- , day4_1
+    , day4_1
     ) where
 
 import Debug.Trace (trace)
 import Data.List (sort)
+import Data.List.Split (splitOn)
 import qualified Data.Set as S (empty, insert, member, Set)
 import qualified Data.Text as T
 import qualified Text.ParserCombinators.ReadP as TP
@@ -73,6 +74,6 @@ day3_2 rows = let rows' = fmap T.pack rows
                        '#' -> countTrees rs' x' w (c + 1) xinc yinc
     nth i = T.head . T.drop i
 
--- day4_1 :: String -> Int
--- day4_1 contents = TP.readP_to_S
---   where
+day4_1 :: String -> Int
+day4_1 contents = let fieldLists = map (\s -> map (head . (splitOn ":")) s) $ map (words . unwords) $ splitOn [""] $ lines contents
+                  in length $ filter (\fl -> length fl == 8 || (length fl == 7 && not (elem "cid" fl))) fieldLists
