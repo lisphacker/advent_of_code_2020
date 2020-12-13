@@ -15,7 +15,7 @@ import Debug.Trace (trace, traceShow)
 import Data.List (sort)
 import Data.Char  
 import Data.List.Split (splitOn)
-import qualified Data.Set as S (empty, insert, member, Set, fromList)
+import qualified Data.Set as S (empty, insert, member, notMember, Set, fromList)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Text.ParserCombinators.ReadP as TP
@@ -139,4 +139,17 @@ day5_1 passes = maximum $ map getSeatNum passes
             readBinStr (acc * 2 + 1) c0 c1 cs
 
 day5_2 :: [String] -> Int
-day5_2 = undefined
+day5_2 passes = let ids = S.fromList $ map getSeatNum passes
+                    mx = maximum ids
+                in head $ filter (\x -> x `S.notMember` ids && (x-1) `S.member` ids && (x+1) `S.member` ids) [0..mx]
+  where getSeatNum pass = let row = readBinStr 0 'F' 'B' $ take 7 pass
+                              col = readBinStr 0 'L' 'R' $ (take 3 . drop 7) pass
+                          in row * 8 + col
+        readBinStr :: Int -> Char -> Char -> [Char] -> Int
+        readBinStr acc _ _ [] = acc
+        readBinStr acc c0 c1 (c:cs) =
+         if c == c0
+          then
+            readBinStr (acc * 2) c0 c1 cs
+          else
+            readBinStr (acc * 2 + 1) c0 c1 cs
