@@ -75,5 +75,5 @@ day3_2 rows = let rows' = fmap T.pack rows
     nth i = T.head . T.drop i
 
 day4_1 :: String -> Int
-day4_1 contents = let fieldLists = map (\s -> map (head . (splitOn ":")) s) $ map (words . unwords) $ splitOn [""] $ lines contents
-                  in length $ filter (\fl -> length fl == 8 || (length fl == 7 && not (elem "cid" fl))) fieldLists
+day4_1 contents = let fieldLists = map (map (head . splitOn ":") . words . unwords) $ splitOn [""] $ lines contents
+                  in length $ filter (\fl -> length fl == 8 || (length fl == 7 && "cid" `notElem` fl)) fieldLists
