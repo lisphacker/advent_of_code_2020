@@ -6,12 +6,14 @@ module Lib
     , day3_1
     , day3_2
     , day4_1
+    , day4_2
     ) where
 
 import Debug.Trace (trace)
 import Data.List (sort)
 import Data.List.Split (splitOn)
 import qualified Data.Set as S (empty, insert, member, Set)
+import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Text.ParserCombinators.ReadP as TP
 
@@ -74,6 +76,15 @@ day3_2 rows = let rows' = fmap T.pack rows
                        '#' -> countTrees rs' x' w (c + 1) xinc yinc
     nth i = T.head . T.drop i
 
+t = "a:aa b:bb\nc:cc d:dd\n\ne:ee f:ff\n\ng:gg h:hh\ni:ii\nj:jj"
 day4_1 :: String -> Int
 day4_1 contents = let fieldLists = map (map (head . splitOn ":") . words . unwords) $ splitOn [""] $ lines contents
                   in length $ filter (\fl -> length fl == 8 || (length fl == 7 && "cid" `notElem` fl)) fieldLists
+
+day4_2 :: String -> Int
+day4_2 contents = let fieldLists = map (M.fromList . map ((\[a,b] -> (a, b)) . splitOn ":") . words . unwords) $ splitOn [""] $ lines contents
+                  in length $ filter validate fieldLists
+  where validate fl
+          | length fl <= 6 = False
+          | length fl == 7 && "cid" `M.member` fl = False 
+          | otherwise = True

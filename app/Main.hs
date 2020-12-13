@@ -27,7 +27,7 @@ main3 = do
 main4 :: IO ()
 main4 = do
     contents <- getContents
-    print $ day4_1 contents
+    print $ day4_2 contents
 
 main :: IO ()
 main = main4
