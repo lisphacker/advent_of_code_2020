@@ -9,13 +9,15 @@ module Lib
     , day4_2
     ) where
 
-import Debug.Trace (trace)
+import Debug.Trace (trace, traceShow)
 import Data.List (sort)
+import Data.Char  
 import Data.List.Split (splitOn)
-import qualified Data.Set as S (empty, insert, member, Set)
+import qualified Data.Set as S (empty, insert, member, Set, fromList)
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Text.ParserCombinators.ReadP as TP
+import Text.Read (readMaybe)
 
 day1_1 :: [Int] -> Maybe Int
 day1_1 l = let l' = sort l
@@ -83,8 +85,33 @@ day4_1 contents = let fieldLists = map (map (head . splitOn ":") . words . unwor
 
 day4_2 :: String -> Int
 day4_2 contents = let fieldLists = map (M.fromList . map ((\[a,b] -> (a, b)) . splitOn ":") . words . unwords) $ splitOn [""] $ lines contents
-                  in length $ filter validate fieldLists
+                  in length $ traceShow (map validate fieldLists) $ filter validate fieldLists
   where validate fl
           | length fl <= 6 = False
-          | length fl == 7 && "cid" `M.member` fl = False 
+          | length fl == 7 && "cid" `M.member` fl = False
+          | not $ validateYear 1920 2002 (M.lookup "byr" fl) = False
+          | not $ validateYear 2010 2020 (M.lookup "iyr" fl) = False
+          | not $ validateYear 2020 2030 (M.lookup "eyr" fl) = False
+          | not $ validateHeight (M.lookup "hgt" fl)         = False
+          | not $ validateHairColor (M.lookup "hcl" fl)      = False
+          | not $ validateEyeColor (M.lookup "ecl" fl)       = False
+          | not $ validatePassport (M.lookup "pid" fl)       = False
           | otherwise = True
+
+        validateYear min max (Just byr) = case (readMaybe byr :: Maybe Int) of
+                                   Just y  -> traceShow (show min ++ " " ++ show max ++ " " ++ show y) y >= min && y <= max
+                                   Nothing -> False
+        validateYear _   _   Nothing    = False
+
+        validateHeight (Just hs) = case span isDigit hs of
+                                     (l,t) -> not (null l) && (t == "cm" || t == "in")
+        validateHeight Nothing   = False
+        
+        validateHairColor (Just c) = head c == '#' && all isHexDigit (tail c)
+        validateHairColor Nothing  = False
+        
+        validateEyeColor (Just c) = c `S.member` S.fromList ["amb","blu","brn","gry","grn","hzl","oth"]
+        validateEyeColor Nothing  = False
+
+        validatePassport (Just p) = not (null p) && all isDigit p
+        validatePassport Nothing  = False
