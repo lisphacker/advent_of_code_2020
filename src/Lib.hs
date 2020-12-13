@@ -9,6 +9,8 @@ module Lib
     , day4_2
     , day5_1
     , day5_2
+    , day6_1
+    , day6_2
     ) where
 
 import Debug.Trace (trace, traceShow)
@@ -153,3 +155,9 @@ day5_2 passes = let ids = S.fromList $ map getSeatNum passes
             readBinStr (acc * 2) c0 c1 cs
           else
             readBinStr (acc * 2 + 1) c0 c1 cs
+
+day6_1 :: [String] -> Int
+day6_1 = undefined
+
+day6_2 :: [String] -> Int
+day6_2 = undefined
