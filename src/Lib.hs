@@ -1,23 +1,10 @@
-module Lib
-    ( day1_1
-    , day1_2
-    , day2_1
-    , day2_2
-    , day3_1
-    , day3_2
-    , day4_1
-    , day4_2
-    , day5_1
-    , day5_2
-    , day6_1
-    , day6_2
-    ) where
+module Lib where
 
 import Debug.Trace (trace, traceShow)
 import Data.List (sort)
 import Data.Char  
 import Data.List.Split (splitOn)
-import qualified Data.Set as S (empty, insert, member, notMember, Set, fromList)
+import qualified Data.Set as S
 import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Text.ParserCombinators.ReadP as TP
@@ -157,7 +144,18 @@ day5_2 passes = let ids = S.fromList $ map getSeatNum passes
             readBinStr (acc * 2 + 1) c0 c1 cs
 
 day6_1 :: [String] -> Int
-day6_1 = undefined
+day6_1 rows = let sets = readInput rows S.empty []
+              in sum $ map S.size sets
+  where readInput []     s sets = s:sets
+        readInput (r:rs) s sets
+          | null r    = readInput rs S.empty (s:sets)
+          | otherwise = readInput rs (S.union s $ S.fromList r) sets
+
 
 day6_2 :: [String] -> Int
-day6_2 = undefined
+day6_2 rows = let sets = readInput rows (S.fromList ['a'..'z']) []
+              in sum $ map S.size sets
+  where readInput []     s sets = s:sets
+        readInput (r:rs) s sets
+          | null r    = readInput rs (S.fromList ['a'..'z']) (s:sets)
+          | otherwise = readInput rs (S.intersection s $ S.fromList r) sets

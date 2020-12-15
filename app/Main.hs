@@ -37,7 +37,7 @@ main5 = do
 main6 :: IO ()
 main6 = do
     rows <- lines <$> getContents
-    print $ day6_1 rows
+    print $ day6_2 rows
 
 main :: IO ()
-main = main5
+main = main6
