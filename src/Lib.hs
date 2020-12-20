@@ -168,17 +168,17 @@ day6_2 rows = let sets = readInput rows (S.fromList ['a'..'z']) []
           | otherwise = readInput rs (S.intersection s $ S.fromList r) sets
 
 type Parser = Parsec Void T.Text
-data Bag = Bag T.Text T.Text
-data BagRule = BagRule Bag (S.Set (Bag, Int))
+data Bag = Bag T.Text T.Text deriving (Show)
+data BagRule = BagRule Bag (S.Set (Bag, Int)) deriving (Show)
 
 day7_parse_input :: T.Text -> Maybe [T.Text] -- (M.Map T.Text (S.Set T.Text))
 day7_parse_input text = case parse parseBagRules "" text of 
-                          Left  e -> Just [T.pack $ ("Error: " ++ show e)]
+                          Left  e -> Just [T.pack ("Error: " ++ show e)]
                           Right m -> Just m
   where parseBagRules :: Parser [T.Text]
         parseBagRules = do
           bagRule <- parseBagRule
-          newline
-          return [bagRule]
+          bagRules <- lookAhead eof >> return [] <|> parseBagRules
+          return $ bagRule:bagRules
         parseBagRule :: Parser T.Text
         parseBagRule = T.pack <$> some (anySingleBut '\n')
