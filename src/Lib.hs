@@ -1,3 +1,6 @@
+{-# LANGUAGE OverloadedStrings #-}
+-- {-# LANGUAGE RecordWildCards   #-}
+
 module Lib where
 
 import Debug.Trace (trace, traceShow)
@@ -9,6 +12,10 @@ import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import qualified Text.ParserCombinators.ReadP as TP
 import Text.Read (readMaybe)
+import Data.Void
+import Text.Megaparsec hiding (State)
+import Text.Megaparsec.Char
+import qualified Text.Megaparsec.Char.Lexer as L
 
 day1_1 :: [Int] -> Maybe Int
 day1_1 l = let l' = sort l
@@ -159,3 +166,19 @@ day6_2 rows = let sets = readInput rows (S.fromList ['a'..'z']) []
         readInput (r:rs) s sets
           | null r    = readInput rs (S.fromList ['a'..'z']) (s:sets)
           | otherwise = readInput rs (S.intersection s $ S.fromList r) sets
+
+type Parser = Parsec Void T.Text
+data Bag = Bag T.Text T.Text
+data BagRule = BagRule Bag (S.Set (Bag, Int))
+
+day7_parse_input :: T.Text -> Maybe [T.Text] -- (M.Map T.Text (S.Set T.Text))
+day7_parse_input text = case parse parseBagRules "" text of 
+                          Left  e -> Just [T.pack $ ("Error: " ++ show e)]
+                          Right m -> Just m
+  where parseBagRules :: Parser [T.Text]
+        parseBagRules = do
+          bagRule <- parseBagRule
+          newline
+          return [bagRule]
+        parseBagRule :: Parser T.Text
+        parseBagRule = T.pack <$> some (anySingleBut '\n')

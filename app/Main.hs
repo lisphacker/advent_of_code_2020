@@ -2,6 +2,7 @@ module Main where
 
 import Debug.Trace (trace)
 import Data.List.Split (splitOn)
+import qualified Data.Text as T
 import Lib
 
 main1 :: IO ()
@@ -39,5 +40,10 @@ main6 = do
     rows <- lines <$> getContents
     print $ day6_2 rows
 
+main7 :: IO ()
+main7 = do
+    contents <- T.pack <$> getContents
+    print $ day7_parse_input contents
+
 main :: IO ()
-main = main6
+main = main7
